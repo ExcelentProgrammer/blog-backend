@@ -25,6 +25,7 @@ urlpatterns = [
     path('ckeditor/', include('ckeditor_uploader.urls')),
 
     re_path(r"media/(.*)", serve, {"document_root": settings.MEDIA_ROOT}),
+    re_path(r"static/(.*)", serve, {"document_root": settings.STATIC_ROOT}),
 
     path('swagger<format>/', schema_view.without_ui(cache_timeout=0), name='schema-json'),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
