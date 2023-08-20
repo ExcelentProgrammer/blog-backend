@@ -30,6 +30,10 @@ DEBUG = env.bool("DEBUG")
 
 ALLOWED_HOSTS = ["*"]
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://api.iprogrammer.uz"
+]
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -54,6 +58,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+        "whitenoise.middleware.WhiteNoiseMiddleware",
     'django.contrib.sessions.middleware.SessionMiddleware',
       "corsheaders.middleware.CorsMiddleware",
     'django.middleware.common.CommonMiddleware',
@@ -150,7 +155,12 @@ CKEDITOR_CONFIGS = {
 CORS_ALLOW_ALL_ORIGINS = True
 
 DOMAIN = env.str("DOMAIN")
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
+
 
 from telebot import TeleBot
 
 bot = TeleBot(env.str("BOT_TOKEN"))
+
+
