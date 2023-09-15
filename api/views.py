@@ -6,7 +6,7 @@ from rest_framework.views import APIView
 from api.models import Skills, Messages, Projects, Education, Experience
 from api.serializers import EducationSerializer, ExperienceSerializer
 from .serializers import ContactSerializer
-from config.settings import bot,env
+from config.settings import bot, env
 
 
 class SkillsAPI(APIView):
@@ -37,7 +37,7 @@ class ProjectsAPI(APIView):
     def get(self, request):
         response = []
 
-        projects = Projects.objects.all()
+        projects = Projects.objects.all().order_by("id").reverse()
 
         for project in projects:
             response.append(project.to_json())
@@ -50,28 +50,34 @@ class EducationAPI(ListAPIView):
     queryset = Education.objects.all()
     serializer_class = EducationSerializer
 
+    def get_queryset(self):
+        return super().get_queryset().order_by("id").reverse()
+
+
 
 class ExperienceAPI(ListAPIView):
     model = Experience
     queryset = Experience.objects.all()
     serializer_class = ExperienceSerializer
 
+    def get_queryset(self):
+        return super().get_queryset().order_by("id").reverse()
 
 class ContactAPI(APIView):
 
     serializer_class = ContactSerializer
 
-    def post(self,request):
-        
+    def post(self, request):
+
         ser = ContactSerializer(data=request.data)
 
         if not ser.is_valid():
-            return Response({"error":ser.errors,"message":"form.not.valid","success":False})
+            return Response({"error": ser.errors, "message": "form.not.valid", "success": False})
         data = ser.data
 
-        message = '''🤓 Yangi Xabar\n🙎‍♂️ Ism: {name}\n📬 Email: {email}\n🖌 Subject: {subject}\n✍️ Xabar: {message}'''.format(name=data.get("name"),email=data.get("email"),subject=data.get("subject"),message=data.get("message"))
+        message = '''🤓 Yangi Xabar\n🙎‍♂️ Ism: {name}\n📬 Email: {email}\n🖌 Subject: {subject}\n✍️ Xabar: {message}'''.format(
+            name=data.get("name"), email=data.get("email"), subject=data.get("subject"), message=data.get("message"))
 
-        bot.send_message(chat_id=env.int("ADMIN_ID"),text=message)
-        
+        bot.send_message(chat_id=env.int("ADMIN_ID"), text=message)
 
-        return Response({"response":"ok","success":True})
+        return Response({"response": "ok", "success": True})
